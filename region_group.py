@@ -735,6 +735,48 @@ def build_config(merged, min_region):
 
 
 # ======================================================================
+# 可用性验证 (TCP 预筛 + mihomo 真连)
+# ======================================================================
+def verify_nodes(merged, mihomo_exe=None, timeout_ms=5000, conc=64):
+    """先用 socket 做便宜的 TCP 预筛, 再用 mihomo 逐个真连 google generate_204。
+    返回 (存活节点列表[按延迟升序], {mihomo名: 延迟ms})。"""
+    total = len(merged)
+    probe = [{"address": it["proxy"]["server"], "port": int(it["proxy"]["port"])}
+             for it in merged]
+    alive = k.tcp_screen(probe, timeout=2.0, conc=400)
+    keys = {(a["address"], int(a["port"])) for a in alive}
+    merged = [it for it in merged
+              if (it["proxy"]["server"], int(it["proxy"]["port"])) in keys]
+    ok(f"TCP 预筛: {paint(len(merged), k.C.GREEN)}/{total} 端口可连通")
+    if not merged:
+        return [], {}
+
+    exe = k.ensure_mihomo(mihomo_exe)
+    mh = k.Mihomo(exe)
+    port = mh.ensure_port()
+    os.makedirs(k.RUNDIR, exist_ok=True)
+    path = os.path.join(k.RUNDIR, "config_verify.yaml")
+    k.dump_yaml(k.build_test_config([it["proxy"] for it in merged],
+                                    controller_port=port), path)
+    mh.start(path)
+    try:
+        names = [it["proxy"]["name"] for it in merged]
+        delays = mh.delay_many(names, k.SCREEN_URL, timeout_ms, conc, label="真连验证")
+    finally:
+        mh.stop()
+
+    alive_items = []
+    for it in merged:
+        d = delays.get(it["proxy"]["name"], -1)
+        if d and d > 0:
+            it["delay"] = d
+            alive_items.append(it)
+    alive_items.sort(key=lambda x: x["delay"])
+    ok(f"mihomo 真连验证: {paint(len(alive_items), k.C.GREEN)}/{len(merged)} 真实可用")
+    return alive_items, {it["proxy"]["name"]: it["delay"] for it in alive_items}
+
+
+# ======================================================================
 # 主流程
 # ======================================================================
 def main():
@@ -750,6 +792,12 @@ def main():
     ap.add_argument("--min-region", type=int, default=1, help="地区节点数少于该值就不单独建分组")
     ap.add_argument("--max-nodes", type=int, default=0, help="合并后最多保留节点数(0=不限)")
     ap.add_argument("--no-color", action="store_true", help="关闭彩色输出")
+    ap.add_argument("--no-verify", action="store_true",
+                    help="跳过可用性验证(默认做 TCP 预筛 + mihomo 真连)")
+    ap.add_argument("--mihomo", default=None, help="指定 mihomo 内核路径(默认自动探测/下载)")
+    ap.add_argument("--delay-timeout", type=int, default=5000,
+                    help="单节点真连验证超时(毫秒)")
+    ap.add_argument("--verify-conc", type=int, default=64, help="真连验证并发数")
     args = ap.parse_args()
     COLOR = not args.no_color and sys.stdout.isatty()
 
@@ -762,7 +810,7 @@ def main():
     log(paint("=== 合并上游订阅 + 按地区分组 ===", k.C.BOLD + k.C.MAGENTA)
         + f"  日志: {os.path.basename(LOGFILE)}")
 
-    log(f"[1/4] 拉取 {len(SOURCES)} 个上游订阅" + ("(复用缓存)" if args.skip_fetch else ""))
+    log(f"[1/5] 拉取 {len(SOURCES)} 个上游订阅" + ("(复用缓存)" if args.skip_fetch else ""))
     merged, per_source = load_all(args.skip_fetch)
     if not merged:
         warn("没有任何源解析出可用节点, 不覆盖已有结果, 退出。")
@@ -773,23 +821,41 @@ def main():
     uniquify_names(merged)
     ok(f"共 {paint(len(merged), k.C.GREEN)} 个去重节点")
 
+    vstats = {"enabled": not args.no_verify, "tcp_total": len(merged),
+              "alive": len(merged)}
+    if args.no_verify:
+        log("[2/5] 跳过可用性验证 (--no-verify)")
+    else:
+        log("[2/5] 可用性验证 (TCP 预筛 + mihomo 真连)")
+        try:
+            merged, _vdelays = verify_nodes(
+                merged, args.mihomo, args.delay_timeout, args.verify_conc)
+            vstats["alive"] = len(merged)
+        except Exception as e:
+            warn(f"验证失败({e}), 跳过验证并保留全部节点")
+            vstats["enabled"] = False
+            vstats["error"] = str(e)
+        if not merged:
+            warn("验证后无可用节点, 不覆盖已有结果, 退出。")
+            return 1
+
     if args.no_geoip:
-        log("[2/4] 按节点名归类 (--no-geoip)")
+        log("[3/5] 按节点名归类 (--no-geoip)")
         for it in merged:
             it["region"] = detect_region(it["name"]) or OTHER
         gstats = {"ip": 0, "name": len(merged)}
     else:
-        log("[2/4] 按服务器 IP 做 GeoIP 归类(名字兜底)")
+        log("[3/5] 按服务器 IP 做 GeoIP 归类(名字兜底)")
         db = ensure_geoip_db(force=args.update_geoip_db)
         gstats = apply_geoip(merged, db=db)
         ok(f"IP 命中 {paint(gstats['ip'], k.C.GREEN)} / 名字兜底 {gstats['name']}")
 
-    log("[3/4] 建组统计")
+    log("[4/5] 建组统计")
     cfg, region_stats = build_config(merged, args.min_region)
     for r, c in sorted(region_stats.items(), key=lambda kv: (kv[0] == OTHER, -kv[1])):
         log(f"    {r:<12} {c}")
 
-    log("[4/4] 写出订阅")
+    log("[5/5] 写出订阅")
     k.dump_yaml(cfg, args.out)
     meta = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -797,6 +863,7 @@ def main():
         "sources": per_source,
         "regions": region_stats,
         "classify": gstats,
+        "verify": vstats,
     }
     with open(META_OUT, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)

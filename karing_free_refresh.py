@@ -49,6 +49,7 @@ RUNDIR = os.path.join(BASE, "rundir")
 # 常见客户端自带 mihomo 的位置(按顺序探测, 找到即用)
 MIHOMO_CANDIDATES = [
     os.path.join(BINDIR, "mihomo.exe"),
+    os.path.join(BINDIR, "mihomo"),          # Linux / macOS (CI 里下载到 bin/)
     r"E:\Software\v2rayN-windows-64-desktop\v2rayN-windows-64\bin\mihomo\mihomo.exe",
     os.path.expandvars(r"%LOCALAPPDATA%\Programs\clash-verge\resources\sidecar\mihomo-x86_64-pc-windows-msvc.exe"),
     os.path.expandvars(r"%APPDATA%\io.github.clash-verge-rev.clash-verge-rev\mihomo\mihomo.exe"),

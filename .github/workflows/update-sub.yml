@@ -17,7 +17,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,6 +36,19 @@ jobs:
         with:
           path: cache/geoip_country_ipv4.csv
           key: geoip-db-v1
+
+      # 下载 mihomo 内核(Linux)到 bin/，供 region_group.py 做真连可用性验证。
+      - name: Install mihomo core
+        run: |
+          set -e
+          url=$(python -c "import json,urllib.request as u;r=json.load(u.urlopen('https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'));print(next(a['browser_download_url'] for a in r['assets'] if a['name'].startswith('mihomo-linux-amd64') and a['name'].endswith('.gz') and 'compatible' in a['name']))")
+          echo "mihomo asset: $url"
+          curl -fsSL "$url" -o mihomo.gz
+          gunzip -f mihomo.gz
+          mkdir -p bin
+          mv mihomo bin/mihomo
+          chmod +x bin/mihomo
+          ./bin/mihomo -v
 
       - name: Generate subscription
         env:
