@@ -34,6 +34,28 @@ DEF_FILE = os.path.join(BASE, "output", "karing_region.yaml")
 DEF_META = os.path.join(BASE, "output", "karing_region_meta.json")
 
 
+def _load_dotenv(path):
+    """从同目录 .env 读取 KEY=VALUE, 仅在环境变量尚未设置时填充。"""
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding="utf-8-sig") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k = k.strip()
+                v = v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
+_load_dotenv(os.path.join(BASE, ".env"))
+
+
 def _put(account, ns, key, data, token):
     """PUT 一个值到 KV。返回 (成功?, 说明)。"""
     url = f"{API}/accounts/{account}/storage/kv/namespaces/{ns}/values/{key}"

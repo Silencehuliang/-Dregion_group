@@ -1,48 +1,42 @@
 {
-  "generated_at": "2026-10-11 02:49:54",
-  "total_nodes": 249,
+  "generated_at": "2026-10-11 11:19:19",
+  "total_nodes": 14,
   "sources": {
     "matin_super": 190,
     "barryfar": 223,
     "nomorewalls": 154,
     "bestclash": 15,
-    "epodonios": 239
+    "epodonios": 239,
+    "k_mhdi_mix": 458,
+    "k_epodonios_all": 3028,
+    "k_mfuu_sub": 217,
+    "k_ermaozi_v2ray": 35,
+    "k_ebrasha_all": 7140,
+    "k_aiboboxx_sub": 47,
+    "k_peasoft_raw": 46,
+    "k_pawdroid_sub": 6,
+    "k_barryfar_all": 0,
+    "k_ripaojiedian": 0,
+    "k_mahdi_eternity": 0
   },
   "regions": {
-    "🇳🇱 荷兰": 58,
-    "🇺🇸 美国": 38,
-    "🇨🇦 加拿大": 35,
-    "🇯🇵 日本": 25,
-    "🇩🇪 德国": 18,
-    "🇰🇷 韩国": 15,
-    "🇸🇬 新加坡": 14,
-    "🇭🇰 香港": 10,
-    "🇮🇪 爱尔兰": 7,
-    "🇬🇧 英国": 6,
-    "🇫🇮 芬兰": 4,
-    "🇪🇸 西班牙": 2,
-    "🇷🇴 罗马尼亚": 2,
-    "🇫🇷 法国": 2,
-    "🇿🇦 南非": 2,
-    "🇧🇬 保加利亚": 1,
-    "SC": 1,
-    "🇵🇹 葡萄牙": 1,
-    "🇦🇹 奥地利": 1,
-    "🇮🇹 意大利": 1,
-    "🇮🇳 印度": 1,
-    "🇳🇴 挪威": 1,
+    "🇨🇦 加拿大": 5,
+    "🇺🇸 美国": 2,
+    "🇭🇰 香港": 1,
+    "🇩🇪 德国": 1,
+    "🇳🇱 荷兰": 1,
     "🇵🇱 波兰": 1,
-    "🇨🇭 瑞士": 1,
-    "🇮🇩 印尼": 1,
-    "🇹🇭 泰国": 1
+    "🇬🇧 英国": 1,
+    "🇷🇺 俄罗斯": 1,
+    "🇱🇹 立陶宛": 1
   },
   "classify": {
-    "ip": 249,
+    "ip": 14,
     "name": 0
   },
   "verify": {
     "enabled": true,
-    "tcp_total": 821,
-    "alive": 249
+    "tcp_total": 11798,
+    "alive": 14
   }
 }

@@ -73,6 +73,15 @@ SOURCES = [
      "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Sub1.txt"),
 ]
 
+# 追加 karing_free_refresh.py 里更丰富、更新更勤的源(对国内可用性更好)。
+_seen_urls = {u for _, _, u in SOURCES}
+for _cache, _label, _raw in getattr(k, "SOURCES", []):
+    _u = f"https://raw.githubusercontent.com/{_raw}"
+    if _u in _seen_urls:
+        continue
+    _seen_urls.add(_u)
+    SOURCES.append((f"k_{_cache}", "links", _u))
+
 # 二位国家码 -> 分组显示名(带国旗)
 REGION_NAMES = {
     "HK": "🇭🇰 香港", "TW": "🇹🇼 台湾", "MO": "🇲🇴 澳门",

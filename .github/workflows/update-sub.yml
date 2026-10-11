@@ -1,9 +1,10 @@
 name: Update subscription
 
-# 每 15 分钟生成一次订阅(带偏移，降低整点/固定分钟的漂移)，并支持手动触发。
+# 订阅以「本地验证后发布」为主(见 本地更新并发布.bat): 在你自己网络里验证节点, 再把结果推到同一个 Cloudflare 地址。
+# 这里保留手动触发(workflow_dispatch)作为备用/海外线路; 定时任务已关闭, 以免海外 runner 的验证结果覆盖本地结果。
 on:
-  schedule:
-    - cron: "7,22,37,52 * * * *"
+  # schedule:
+  #   - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 # 同一时刻只跑一个，避免并发写 KV / 并发提交。
