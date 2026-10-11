@@ -1,42 +1,38 @@
 {
-  "generated_at": "2026-10-11 11:19:19",
-  "total_nodes": 14,
+  "generated_at": "2026-10-11 13:13:53",
+  "total_nodes": 9,
   "sources": {
     "matin_super": 190,
     "barryfar": 223,
-    "nomorewalls": 154,
+    "nomorewalls": 147,
     "bestclash": 15,
-    "epodonios": 239,
+    "epodonios": 243,
     "k_mhdi_mix": 458,
-    "k_epodonios_all": 3028,
-    "k_mfuu_sub": 217,
-    "k_ermaozi_v2ray": 35,
-    "k_ebrasha_all": 7140,
-    "k_aiboboxx_sub": 47,
-    "k_peasoft_raw": 46,
-    "k_pawdroid_sub": 6,
+    "k_epodonios_all": 3030,
+    "k_mfuu_sub": 220,
+    "k_ermaozi_v2ray": 31,
+    "k_ebrasha_all": 7112,
+    "k_aiboboxx_sub": 51,
+    "k_peasoft_raw": 45,
+    "k_pawdroid_sub": 4,
     "k_barryfar_all": 0,
     "k_ripaojiedian": 0,
     "k_mahdi_eternity": 0
   },
   "regions": {
-    "🇨🇦 加拿大": 5,
+    "🇨🇦 加拿大": 3,
+    "🇱🇹 立陶宛": 2,
     "🇺🇸 美国": 2,
-    "🇭🇰 香港": 1,
-    "🇩🇪 德国": 1,
-    "🇳🇱 荷兰": 1,
-    "🇵🇱 波兰": 1,
-    "🇬🇧 英国": 1,
-    "🇷🇺 俄罗斯": 1,
-    "🇱🇹 立陶宛": 1
+    "🇹🇼 台湾": 1,
+    "🇫🇮 芬兰": 1
   },
   "classify": {
-    "ip": 14,
+    "ip": 9,
     "name": 0
   },
   "verify": {
     "enabled": true,
-    "tcp_total": 11798,
-    "alive": 14
+    "tcp_total": 11769,
+    "alive": 9
   }
 }

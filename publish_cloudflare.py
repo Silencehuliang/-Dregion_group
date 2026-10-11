@@ -25,6 +25,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -56,31 +57,40 @@ def _load_dotenv(path):
 _load_dotenv(os.path.join(BASE, ".env"))
 
 
-def _put(account, ns, key, data, token):
-    """PUT 一个值到 KV。返回 (成功?, 说明)。"""
+def _put(account, ns, key, data, token, attempts=4):
+    """PUT 一个值到 KV(失败重试)。返回 (成功?, 说明)。"""
     url = f"{API}/accounts/{account}/storage/kv/namespaces/{ns}/values/{key}"
-    req = urllib.request.Request(
-        url, data=data, method="PUT",
-        headers={"Authorization": f"Bearer {token}",
-                 "Content-Type": "application/octet-stream"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            body = r.read().decode("utf-8", "replace")
-    except urllib.error.HTTPError as e:
+    last = ""
+    for i in range(1, attempts + 1):
+        req = urllib.request.Request(
+            url, data=data, method="PUT",
+            headers={"Authorization": f"Bearer {token}",
+                     "Content-Type": "application/octet-stream"})
         try:
-            detail = e.read().decode("utf-8", "replace")[:300]
-        except Exception:
-            detail = ""
-        return False, f"HTTP {e.code} {detail}"
-    except Exception as e:
-        return False, f"{type(e).__name__}: {e}"
-    try:
-        j = json.loads(body)
-        if j.get("success"):
-            return True, "ok"
-        return False, json.dumps(j.get("errors") or j, ensure_ascii=False)[:300]
-    except Exception:
-        return True, (body[:200] or "ok")
+            with urllib.request.urlopen(req, timeout=90) as r:
+                body = r.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            try:
+                detail = e.read().decode("utf-8", "replace")[:300]
+            except Exception:
+                detail = ""
+            last = f"HTTP {e.code} {detail}"
+            if 400 <= e.code < 500 and e.code != 429:
+                return False, last          # 鉴权/参数错误, 重试没意义
+        except Exception as e:
+            last = f"{type(e).__name__}: {e}"   # 含 RemoteDisconnected / 超时
+        else:
+            try:
+                j = json.loads(body)
+                if j.get("success"):
+                    return True, ("ok" if i == 1 else f"ok(第{i}次)")
+                last = json.dumps(j.get("errors") or j, ensure_ascii=False)[:300]
+            except Exception:
+                return True, (body[:200] or "ok")
+        if i < attempts:
+            print(f"    连接抖动, 重试 {i}/{attempts - 1} ({last}) ...")
+            time.sleep(2 * i)
+    return False, last
 
 
 def main():

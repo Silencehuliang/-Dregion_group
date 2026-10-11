@@ -24,7 +24,8 @@ echo --- 推送到 Cloudflare KV ---
 "E:\Development\Env\Python3.10.11\python.exe" publish_cloudflare.py
 if errorlevel 1 (
   echo.
-  echo [X] 推送失败, 请检查本目录 .env 里的 CF_* 配置。
+  echo [X] 推送失败。多为网络抖动(脚本已自动重试 4 次)。
+  echo     重跑一次通常就好; 若持续失败再检查本目录 .env 里的 CF_* 配置。
   echo.
   pause
   exit /b 1
