@@ -1,0 +1,20 @@
+name = "karing-sub"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# 在 Cloudflare 控制台建好 KV 命名空间后, 把它的 ID 填到这里:
+#   Workers & Pages -> KV -> Create namespace  (名字建议 karing-sub)
+[[kv_namespaces]]
+binding = "SUB_KV"
+id = "73db1623f0524b4ebf856f5e394b612f"
+# preview_id = "REPLACE_IF_USING_WRANGLER_DEV"
+
+[vars]
+SUB_KEY = "karing_region.yaml"
+META_KEY = "karing_region_meta.json"
+
+# 绑定自定义域名 —— 国内可直连的关键 (workers.dev 在国内被墙)。
+# 把 sub.silencehl.eu.org 换成你自己已托管在 Cloudflare 的域名。
+[[routes]]
+pattern = "sub.silencehl.eu.org"
+custom_domain = true

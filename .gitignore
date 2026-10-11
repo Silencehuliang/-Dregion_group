@@ -1,0 +1,21 @@
+# 部署向导的本地变量(含 Token，切勿提交)
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# 运行时/缓存/日志/工作目录(不提交)
+cache/
+logs/
+work/
+rundir/
+backup/
+bin/
+
+# 生成的原始来源缓存
+*.raw
+
+# 注意: output/ 不忽略 —— 其中的 karing_region.yaml 作为 GitHub 备份镜像需要提交。
+!output/karing_region.yaml
+!output/karing_region_meta.json

@@ -1,0 +1,158 @@
+{
+  "last_refresh": "2026-10-11 09:55:26",
+  "total": 13742,
+  "usable": 17,
+  "fast": 11,
+  "fast_ms": 300,
+  "sources": [
+    "GitHub-MhdiTaheri",
+    "GitHub-Epodonios",
+    "GitHub-mfuu",
+    "GitHub-ermaozi",
+    "GitHub-ebrasha",
+    "GitHub-aiboboxx",
+    "GitHub-peasoft",
+    "GitHub-Pawdroid",
+    "GitHub-barry-far",
+    "GitHub-ripaojiedian",
+    "GitHub-mahdibland"
+  ],
+  "nodes": [
+    {
+      "name": "vless-000 148ms c20s5.portablesubmarines.com:443",
+      "proto": "vless",
+      "address": "c20s5.portablesubmarines.com",
+      "port": 443,
+      "delay": 148,
+      "speed": 2893.2
+    },
+    {
+      "name": "vless-001 150ms c20s5.portablesubmarines.com:443",
+      "proto": "vless",
+      "address": "c20s5.portablesubmarines.com",
+      "port": 443,
+      "delay": 150,
+      "speed": 2706.9
+    },
+    {
+      "name": "vless-002 148ms c20s5.portablesubmarines.com:443",
+      "proto": "vless",
+      "address": "c20s5.portablesubmarines.com",
+      "port": 443,
+      "delay": 148,
+      "speed": 2687.9
+    },
+    {
+      "name": "vless-003 100ms www.speedtest.net:80",
+      "proto": "vless",
+      "address": "www.speedtest.net",
+      "port": 80,
+      "delay": 100,
+      "speed": 2022.9
+    },
+    {
+      "name": "vless-004 339ms 188.225.32.76:443",
+      "proto": "vless",
+      "address": "188.225.32.76",
+      "port": 443,
+      "delay": 339,
+      "speed": 500.3
+    },
+    {
+      "name": "vless-005 180ms www.speedtest.net:80",
+      "proto": "vless",
+      "address": "www.speedtest.net",
+      "port": 80,
+      "delay": 180,
+      "speed": 342.7
+    },
+    {
+      "name": "vless-006 98ms ali-hk.qrfly.top:10102",
+      "proto": "vless",
+      "address": "ali-hk.qrfly.top",
+      "port": 10102,
+      "delay": 98,
+      "speed": 271.3
+    },
+    {
+      "name": "vless-007 335ms 46.182.24.15:443",
+      "proto": "vless",
+      "address": "46.182.24.15",
+      "port": 443,
+      "delay": 335,
+      "speed": 170.8
+    },
+    {
+      "name": "vless-008 285ms 23.81.36.65:443",
+      "proto": "vless",
+      "address": "23.81.36.65",
+      "port": 443,
+      "delay": 285,
+      "speed": 98.6
+    },
+    {
+      "name": "vless-009 387ms 194.226.121.119:2087",
+      "proto": "vless",
+      "address": "194.226.121.119",
+      "port": 2087,
+      "delay": 387,
+      "speed": 32.5
+    },
+    {
+      "name": "trojan-010 195ms russia.com:443",
+      "proto": "trojan",
+      "address": "russia.com",
+      "port": 443,
+      "delay": 195,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-011 196ms 172.67.171.191:8080",
+      "proto": "vless",
+      "address": "172.67.171.191",
+      "port": 8080,
+      "delay": 196,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-012 232ms 157.228.160.166:443",
+      "proto": "vless",
+      "address": "157.228.160.166",
+      "port": 443,
+      "delay": 232,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-013 268ms 157.228.150.34:443",
+      "proto": "vless",
+      "address": "157.228.150.34",
+      "port": 443,
+      "delay": 268,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-014 413ms 104.16.10.21:443",
+      "proto": "vless",
+      "address": "104.16.10.21",
+      "port": 443,
+      "delay": 413,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-015 534ms test.keoplentuio.xyz:2053",
+      "proto": "vless",
+      "address": "test.keoplentuio.xyz",
+      "port": 2053,
+      "delay": 534,
+      "speed": 0.0
+    },
+    {
+      "name": "vless-016 584ms 80.209.238.60:443",
+      "proto": "vless",
+      "address": "80.209.238.60",
+      "port": 443,
+      "delay": 584,
+      "speed": 0.0
+    }
+  ]
+}

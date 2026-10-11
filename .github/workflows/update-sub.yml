@@ -1,0 +1,65 @@
+name: Update subscription
+
+# 每 15 分钟生成一次订阅(带偏移，降低整点/固定分钟的漂移)，并支持手动触发。
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+# 同一时刻只跑一个，避免并发写 KV / 并发提交。
+concurrency:
+  group: update-sub
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # 用于把生成的订阅提交回仓库(备份镜像)
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
+      # GeoIP 离线库 ~10MB，缓存起来省去每次都下载。
+      - name: Cache GeoIP database
+        uses: actions/cache@v4
+        with:
+          path: cache/geoip_country_ipv4.csv
+          key: geoip-db-v1
+
+      - name: Generate subscription
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python region_group.py --no-color
+
+      # 把订阅写入 Cloudflare KV。未配置 Secrets 时脚本会跳过(不报错)。
+      - name: Publish to Cloudflare KV
+        env:
+          PYTHONIOENCODING: utf-8
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_KV_NAMESPACE_ID: ${{ secrets.CF_KV_NAMESPACE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python publish_cloudflare.py
+
+      # 顺便把订阅提交回仓库，作为 raw/jsdelivr 备用镜像。
+      - name: Commit backup mirror
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/karing_region.yaml output/karing_region_meta.json
+          if git diff --cached --quiet; then
+            echo "无变化, 跳过提交"
+          else
+            git commit -m "chore: update subscription [skip ci]"
+            git push
+          fi
